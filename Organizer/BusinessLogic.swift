@@ -58,12 +58,16 @@ func recapTexte<T: Recapitulable>(_ items: [T], titre: String) -> String {
 
 // MARK: - Fonction generique de tri temporel
 
-// TODO 5 : retourner les `limite` elements les plus recents d'un
-//          tableau, quel que soit le type T, a condition de savoir
-//          extraire une Date de chaque element via la closure
-//          `dateDe`.
+// Retourne les `limite` elements les plus recents d'un tableau, quel
+// que soit le type T : on extrait une Date de chaque element via la
+// closure `dateDe`, on trie du plus recent au plus ancien, puis on
+// garde les `limite` premiers.
 func elementsRecents<T>(_ items: [T], dateDe: (T) -> Date, limite: Int) -> [T] {
-    Array(items.prefix(limite)) // a remplacer : pour l'instant aucun tri par date
+    Array(
+        items
+            .sorted { dateDe($0) > dateDe($1) }
+            .prefix(limite)
+    )
 }
 
 // MARK: - Validation (gestion d'erreurs)
