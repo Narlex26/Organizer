@@ -96,19 +96,30 @@ enum ErreurValidationEvenement: Error, LocalizedError {
 //          tableau -- aucune notion de SwiftData ici, uniquement du
 //          Swift standard.
 func validerEvenement(nom: String, date: Date, budgetPrevu: Double) throws {
-    // a implementer : pour l'instant tout evenement est considere valide
+    if nom.trimmingCharacters(in: .whitespaces).isEmpty {
+        throw ErreurValidationEvenement.nomVide
+    }
+    if date < .now {
+        throw ErreurValidationEvenement.dateDansLePasse
+    }
+    if budgetPrevu <= 0 {
+        throw ErreurValidationEvenement.budgetInvalide
+    }
 }
 
 func montantTotalDepenses(_ depenses: [Depense]) -> Double {
-    0 // a implementer
+    depenses.reduce(0) { $0 + $1.montant }
 }
 
 func tauxConfirmation(_ invitations: [Invitation]) -> Double {
-    0 // a implementer
+    guard !invitations.isEmpty else { return 0 }
+    let confirmes = invitations.filter { $0.statut == .confirme }.count
+    return Double(confirmes) / Double(invitations.count)
 }
 
 func repartitionDepensesParCategorie(_ depenses: [Depense]) -> [CategorieDepense: Double] {
-    [:] // a implementer
+    let groupes = Dictionary(grouping: depenses, by: \.categorie)
+    return groupes.mapValues { $0.reduce(0) { $0 + $1.montant } }
 }
 
 // IDEE A RETENIR
