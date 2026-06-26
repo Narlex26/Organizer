@@ -33,18 +33,19 @@ protocol Recapitulable {
     func resume() -> String
 }
 
-// TODO 4 : faire conformer Evenement et Tache au protocole
-//          Recapitulable (titreRecap, resume()). Pour Evenement, le
-//          resume doit mentionner le nom, le type et la date/lieu.
-//          Fais de meme pour Tache (titre / statut / priorite).
 extension Evenement: Recapitulable {
-    var titreRecap: String { "" } // a remplacer par `nom`
-    func resume() -> String { "" } // a implementer
+    var titreRecap: String { nom }
+    func resume() -> String {
+        let date = dateEvenement.formatted(date: .abbreviated, time: .omitted)
+        return "\(type.rawValue) · \(date) · \(lieu)"
+    }
 }
 
 extension Tache: Recapitulable {
-    var titreRecap: String { "" } // a remplacer par `titre`
-    func resume() -> String { "" } // a implementer
+    var titreRecap: String { titre }
+    func resume() -> String {
+        "[\(statut.rawValue)] \(titre) — \(priorite.rawValue)"
+    }
 }
 
 // Fonction generique fournie : elle accepte n'importe quel tableau
