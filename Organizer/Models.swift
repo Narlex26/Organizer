@@ -63,12 +63,15 @@ enum StatutTache: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    // TODO 3 : faire cycler le statut vers l'etape suivante
-    //          (A faire -> En cours -> Terminee -> A faire).
-    //          Utilise par le swipe action de TachesView et
-    //          EvenementDetailView. Pattern matching avec switch.
+    // Fait cycler le statut vers l'etape suivante :
+    // A faire -> En cours -> Terminee -> A faire.
+    // Utilise par le swipe action de TachesView et EvenementDetailView.
     var suivant: StatutTache {
-        self // a remplacer : pour l'instant le statut ne change jamais
+        switch self {
+        case .aFaire:   .enCours
+        case .enCours:  .terminee
+        case .terminee: .aFaire
+        }
     }
 
     var couleur: Color {
