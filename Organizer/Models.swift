@@ -162,10 +162,9 @@ final class Contact {
     var email: String
     var telephone: String
 
-    // TODO 2 : relation N-N enrichie cote "reutilisable". Si on
-    //          supprime un contact, on veut PRESERVER l'historique de
-    //          ses invitations (elles deviennent orphelines) plutot
-    //          que de les supprimer : deleteRule .nullify.
+    // Cote "reutilisable" : supprimer un contact met Contact a nil
+    // sur ses Invitation (nullify) pour preserver l'historique RSVP.
+    @Relationship(deleteRule: .nullify, inverse: \Invitation.contact)
     var invitations: [Invitation] = []
 
     init(nom: String, email: String = "", telephone: String = "") {
