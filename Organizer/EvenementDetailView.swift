@@ -94,13 +94,21 @@ struct EvenementDetailView: View {
                 }
             }
 
-            // TODO 9 : permettre de faire avancer le statut d'une tache
-            //           par un swipe (swipeActions), en utilisant
-            //           `tache.statut.suivant` dans un
-            //           `withAnimation`.
+            // Taches : un swipe fait avancer le statut a l'etape suivante
+            // (cycle gere par StatutTache.suivant), avec animation.
             Section("Taches (\(evenement.taches.count))") {
                 ForEach(taches) { tache in
                     TacheRow(tache: tache)
+                        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                            Button {
+                                withAnimation {
+                                    tache.statut = tache.statut.suivant
+                                }
+                            } label: {
+                                Label("Avancer", systemImage: "arrow.forward.circle.fill")
+                            }
+                            .tint(.blue)
+                        }
                 }
                 .onDelete { offsets in
                     for index in offsets { context.delete(taches[index]) }
