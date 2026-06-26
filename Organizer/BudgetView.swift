@@ -37,13 +37,24 @@ struct BudgetView: View {
                                         description: Text("Les depenses ajoutees aux evenements apparaitront ici."))
             } else {
                 List {
-                    // TODO 10 : afficher la repartition des depenses par
-                    //           categorie avec un graphique en barres
-                    //           (Charts, BarMark), a partir de
-                    //           `repartition`.
+                    // Repartition des depenses par categorie sous forme
+                    // d'histogramme horizontal (BarMark), trie du plus
+                    // gros au plus petit montant.
                     Section("Repartition par categorie") {
-                        Text("a implementer")
-                            .foregroundStyle(.secondary)
+                        Chart(repartition) { ligne in
+                            BarMark(
+                                x: .value("Montant", ligne.montant),
+                                y: .value("Categorie", ligne.id.rawValue)
+                            )
+                            .foregroundStyle(Color.indigo.gradient)
+                            .annotation(position: .trailing, alignment: .leading) {
+                                Text(ligne.montant, format: .currency(code: "EUR"))
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .chartXAxis(.hidden)
+                        .frame(height: CGFloat(repartition.count) * 44 + 16)
                     }
 
                     Section("Budget par evenement") {
