@@ -54,10 +54,8 @@ struct EvenementDetailView: View {
                 TextField("Notes", text: $evenement.notes, axis: .vertical)
             }
 
-            // TODO 9 : afficher la progression du budget avec une
-            //           ProgressView animee (value lie a
-            //           `progressionBudget`, couleur differente si
-            //           depassement).
+            // Progression du budget : ProgressView animee, plafonnee a
+            // 100 %, qui passe au rouge en cas de depassement.
             Section("Budget") {
                 VStack(alignment: .leading, spacing: 6) {
                     HStack {
@@ -69,7 +67,9 @@ struct EvenementDetailView: View {
                     }
                     .font(.subheadline)
 
-                    ProgressView(value: 0) // a remplacer par `min(progressionBudget, 1.0)`
+                    ProgressView(value: min(progressionBudget, 1.0))
+                        .tint(progressionBudget > 1.0 ? .red : .blue)
+                        .animation(.easeInOut, value: progressionBudget)
                 }
             }
 
