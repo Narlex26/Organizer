@@ -73,12 +73,9 @@ struct EvenementDetailView: View {
                 }
             }
 
-            // TODO 9 : afficher la liste des invites, chacun avec un
-            //           Picker lie a `invitation.statut` (voir
-            //           InvitationRow ci-dessous). Le header de la
-            //           section doit afficher le taux de
-            //           confirmation (via `tauxConfirmation`).
-            Section("Invites (\(evenement.invitations.count))") {
+            // Liste des invites : chacun avec un Picker lie a son statut
+            // RSVP. Le header affiche le taux de confirmation global.
+            Section {
                 ForEach(invitations) { invitation in
                     InvitationRow(invitation: invitation)
                 }
@@ -86,6 +83,14 @@ struct EvenementDetailView: View {
                     afficherAjoutInvite = true
                 } label: {
                     Label("Inviter un contact", systemImage: "person.badge.plus")
+                }
+            } header: {
+                HStack {
+                    Text("Invites (\(evenement.invitations.count))")
+                    Spacer()
+                    Text(tauxConfirmation(evenement.invitations),
+                         format: .percent.precision(.fractionLength(0)))
+                        + Text(" confirmes")
                 }
             }
 
@@ -153,8 +158,14 @@ private struct InvitationRow: View {
                 }
             }
             Spacer()
-            Text(invitation.statut.rawValue) // a remplacer par un Picker lie a $invitation.statut
-                .foregroundStyle(invitation.statut.couleur)
+            Picker("Statut", selection: $invitation.statut) {
+                ForEach(StatutRSVP.allCases) { statut in
+                    Text(statut.rawValue).tag(statut)
+                }
+            }
+            .labelsHidden()
+            .pickerStyle(.menu)
+            .tint(invitation.statut.couleur)
         }
     }
 }
