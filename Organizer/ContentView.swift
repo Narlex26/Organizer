@@ -15,13 +15,29 @@ import SwiftData
 
 struct ContentView: View {
     var body: some View {
-        // TODO 7 : assembler les 3 onglets (Evenements, Taches,
-        //          Budget) dans une TabView, chacun dans son propre
-        //          NavigationStack avec un tabItem (Label +
-        //          systemImage adapte).
-        NavigationStack {
-            Text("a implementer")
-                .navigationTitle("Organizer")
+        // 3 onglets, chacun dans son propre NavigationStack pour que la
+        // navigation d'un onglet n'affecte pas les autres.
+        TabView {
+            NavigationStack {
+                EvenementsView()
+            }
+            .tabItem {
+                Label("Evenements", systemImage: "calendar")
+            }
+
+            NavigationStack {
+                TachesView()
+            }
+            .tabItem {
+                Label("Taches", systemImage: "checklist")
+            }
+
+            NavigationStack {
+                BudgetView()
+            }
+            .tabItem {
+                Label("Budget", systemImage: "eurosign.circle")
+            }
         }
     }
 }
