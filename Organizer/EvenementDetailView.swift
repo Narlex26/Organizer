@@ -139,16 +139,24 @@ struct EvenementDetailView: View {
         }
     }
 
-    // TODO 11 : combiner `elementsRecents` (generique, Module A) et
-    //           `recapTexte` (protocole Recapitulable, Module A) pour
-    //           construire un texte recapitulatif des 5 taches les
-    //           plus recentes, puis le copier dans le presse-papiers
-    //           (UIPasteboard). Affiche une confirmation temporaire
-    //           via `recapCopie`. Mobilise Module A (logique pure),
-    //           Module B (etat SwiftUI) et SwiftData (evenement.taches
-    //           vient d'une relation @Model) en une seule action.
+    // Combine Module A (elementsRecents + recapTexte, Swift pur),
+    // SwiftData (evenement.taches vient d'une relation @Model) et
+    // Module B (etat SwiftUI) en une seule action : on recupere les 5
+    // taches les plus recentes, on en fait un texte et on le copie.
     private func copierRecap() {
-        // a implementer
+        let recentes = elementsRecents(evenement.taches,
+                                       dateDe: \.dateLimite,
+                                       limite: 5)
+        let texte = recapTexte(recentes, titre: "Taches de \(evenement.nom)")
+
+        #if canImport(UIKit)
+        UIPasteboard.general.string = texte
+        #endif
+
+        withAnimation { recapCopie = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            withAnimation { recapCopie = false }
+        }
     }
 }
 
