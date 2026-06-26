@@ -59,22 +59,28 @@ struct AjouterEvenementView: View {
                     Button("Ajouter") { ajouter() }
                 }
             }
-            // TODO 8 (suite) : afficher une Alert quand `erreur` n'est pas
-            //          nil, avec le message renvoye par validerEvenement.
+            .alert("Erreur de validation", isPresented: Binding(
+                get: { erreur != nil },
+                set: { _ in erreur = nil }
+            )) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                if let erreur { Text(erreur) }
+            }
         }
     }
 
-    // TODO 8 (suite) : valider les champs via `validerEvenement` (Module A,
-    //          BusinessLogic.swift) avant d'inserer l'evenement. En cas
-    //          d'erreur (catch), stocker le message dans `erreur` au lieu
-    //          d'inserer.
     private func ajouter() {
-        // a implementer : insertion directe, sans validation pour l'instant
         let budget = Double(budgetPrevuTexte.replacingOccurrences(of: ",", with: ".")) ?? 0
-        let nouvel = Evenement(nom: nom, dateEvenement: dateEvenement, lieu: lieu,
-                                type: type, budgetPrevu: budget, notes: notes)
-        context.insert(nouvel)
-        dismiss()
+        do {
+            try validerEvenement(nom: nom, date: dateEvenement, budgetPrevu: budget)
+            let nouvel = Evenement(nom: nom, dateEvenement: dateEvenement, lieu: lieu,
+                                    type: type, budgetPrevu: budget, notes: notes)
+            context.insert(nouvel)
+            dismiss()
+        } catch {
+            erreur = error.localizedDescription
+        }
     }
 }
 

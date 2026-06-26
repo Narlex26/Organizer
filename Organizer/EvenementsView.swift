@@ -17,8 +17,7 @@ import SwiftData
 struct EvenementsView: View {
     @Environment(\.modelContext) private var context
 
-    // TODO 8 : trier les evenements par date avec @Query(sort:).
-    @Query private var evenements: [Evenement]
+    @Query(sort: \Evenement.dateEvenement) private var evenements: [Evenement]
 
     @State private var afficherAjout = false
 
