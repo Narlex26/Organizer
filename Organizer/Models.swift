@@ -125,12 +125,17 @@ final class Evenement {
     var budgetPrevu: Double
     var notes: String
 
-    // TODO 1 : declarer les 3 relations 1-N depuis Evenement, en
-    //          cascade (supprimer l'evenement supprime ses enfants,
-    //          qui n'ont aucun sens sans lui) : vers Invitation,
-    //          Tache et Depense.
+    // Relations 1-N depuis Evenement, en cascade : supprimer un
+    // evenement supprime ses invitations, taches et depenses, qui
+    // n'ont aucun sens sans lui. L'inverse pointe vers la propriete
+    // `evenement` portee par chaque entite enfant.
+    @Relationship(deleteRule: .cascade, inverse: \Invitation.evenement)
     var invitations: [Invitation] = []
+
+    @Relationship(deleteRule: .cascade, inverse: \Tache.evenement)
     var taches: [Tache] = []
+
+    @Relationship(deleteRule: .cascade, inverse: \Depense.evenement)
     var depenses: [Depense] = []
 
     init(nom: String,
